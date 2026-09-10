@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KCC Mesh — the compute-economy rail (internal units)</title>
+<meta name="description" content="Idle rigs become sovereign mesh-nodes that earn internal contribution-units by verified work — paid only if the result re-verifies, on a conservation-enforced chain. Internal units, NOT money. The money rail is gated behind legal counsel.">
+<style>
+  :root{
+    --bg:#0d0b09; --panel:#181410; --panel2:#1f1a14; --line:#332a20;
+    --ink:#f0e9df; --dim:#a79781; --accent:#e0a355; --accent2:#f0c88a;
+    --good:#6fd39a; --bad:#ff7a6b; --wall:#ffcf6a; --chip:#20190f;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,Roboto,sans-serif;padding:0 0 4rem}
+  .wrap{max-width:900px;margin:0 auto;padding:0 1.25rem}
+  header{padding:2.2rem 0 .6rem}
+  h1{font-size:1.7rem;letter-spacing:-.01em} h1 .hl{color:var(--accent)}
+  .sub{color:var(--dim);margin-top:.5rem;max-width:49rem}
+  h2{font-size:1.02rem;margin:1.5rem 0 .55rem}
+  .wallbox{background:#241a0e;border:1px solid #5a4415;border-left:4px solid var(--wall);border-radius:9px;padding:.9rem 1.1rem;margin:1.1rem 0;color:#f0dcae;font-size:.92rem}
+  .wallbox b{color:var(--wall)}
+  .rails{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.6rem 0}
+  @media(max-width:640px){.rails{grid-template-columns:1fr}}
+  .rail{border:1px solid var(--line);border-radius:9px;padding:.7rem .9rem;font-size:.85rem}
+  .rail.build{border-color:#3d5c3a;background:#101a12} .rail.gate{border-color:#5c3a2a;background:#1a1210}
+  .rail h4{font:700 .72rem var(--mono);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.25rem}
+  .rail.build h4{color:var(--good)} .rail.gate h4{color:var(--bad)}
+  .rail p{color:var(--dim);font-size:.82rem}
+  .ops{display:flex;gap:.45rem;flex-wrap:wrap;margin:.5rem 0}
+  .ops button{background:var(--chip);color:var(--accent2);border:1px solid var(--line);border-radius:8px;font-size:.82rem;font-weight:600;padding:.45rem .85rem;cursor:pointer}
+  .ops button:hover{filter:brightness(1.25)}
+  .ops button.warn{color:var(--bad)}
+  .grid{display:grid;grid-template-columns:1.3fr 1fr;gap:1rem;margin-top:.5rem}
+  @media(max-width:700px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:.9rem 1.05rem}
+  .card h3{font:700 .74rem var(--mono);letter-spacing:.04em;color:var(--accent);text-transform:uppercase;margin-bottom:.5rem}
+  table{width:100%;border-collapse:collapse;font:.86rem var(--mono)}
+  th,td{text-align:left;padding:.28rem .3rem;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:600;font-size:.76rem}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .stat{display:flex;justify-content:space-between;font:.86rem var(--mono);padding:.28rem 0;border-bottom:1px solid var(--line)}
+  .stat b{color:var(--ink)} .ok{color:var(--good)} .no{color:var(--bad)}
+  .log{font:.78rem var(--mono);color:var(--dim);max-height:9rem;overflow:auto;margin-top:.4rem}
+  .log div{padding:.1rem 0} .log .hash{color:var(--accent)}
+  .err{color:var(--bad);font:.82rem var(--mono);margin-top:.5rem;min-height:1.1rem}
+  code{font:.88em var(--mono);background:var(--chip);padding:.08em .35em;border-radius:4px}
+  footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+  footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>KCC Mesh <span class="hl">·</span> the compute-economy rail</h1>
+  <p class="sub">Idle rigs stop mining wasted hashes and become <strong>sovereign mesh-nodes</strong> that earn internal contribution-units by <strong>verified work</strong>: a bounty is escrowed, a node claims it and does the compute, and it is paid <strong>only if the result re-verifies</strong> (proof-of-contribution, not proof-of-asking). Units are <strong>conserved</strong> — no minting after genesis — on a tamper-evident chain, and each node has a budget ceiling it cannot cross, so no node can drain the mesh.</p>
+</header>
+
+<div class="wallbox">
+  <b>⚠ Internal contribution-units — NOT money.</b> These are not a currency, not a cryptocurrency, not tradeable. There is no code path from a unit to money: this kernel exposes <b>no</b> fiat / trade / exchange / withdraw / sell / convert verb (a test checks that against the code). The money rail is a separate, <b>gated</b> matter behind legal counsel.
+</div>
+<div class="rails">
+  <div class="rail build"><h4>✓ compute rail · this</h4><p>rigs run mesh-nodes, earn internal units by re-verified work, settled on a conserved chain. sovereign, no center, no fiat. built here.</p></div>
+  <div class="rail gate"><h4>✗ money rail · gated</h4><p>KCC as a tradeable currency / fiat on-ramp / exchange listing — securities &amp; money-transmission law apply. <b>NOT built.</b> counsel first, human hands.</p></div>
+</div>
+
+<h2>Run the mesh economy</h2>
+<div class="ops">
+  <button id="op-reset">↺ genesis (1000 to the pool)</button>
+  <button id="op-onboard">＋ onboard a rig (fork = wallet)</button>
+  <button id="op-post">post a bounty (pool → escrow)</button>
+  <button id="op-verified">settle ✓ re-verified → the rig earns</button>
+  <button id="op-unverified">settle ✗ not verified → returns to pool</button>
+  <button id="op-tamper" class="warn">tamper the ledger</button>
+</div>
+<div class="err" id="err"></div>
+
+<div class="grid">
+  <div class="card">
+    <h3>balances</h3>
+    <table><thead><tr><th>node</th><th class="n">balance</th><th class="n">committed / ceiling</th></tr></thead><tbody id="balances"></tbody></table>
+    <div class="card" style="margin-top:.7rem;background:var(--panel2)"><h3>open bounties</h3><div id="bounties" class="log"></div></div>
+  </div>
+  <div class="card">
+    <h3>the invariants</h3>
+    <div class="stat"><span>conserved (no minting)</span><b id="s-conserved">—</b></div>
+    <div class="stat"><span>chain intact (audit trail)</span><b id="s-chain">—</b></div>
+    <div class="stat"><span>total supply</span><b id="s-total">—</b></div>
+    <div class="stat"><span>nodes / settled jobs</span><b id="s-counts">—</b></div>
+    <h3 style="margin-top:.8rem">the chain</h3>
+    <div class="log" id="chain"></div>
+  </div>
+</div>
+
+<h2>How a rig earns</h2>
+<div class="wallbox" style="background:var(--panel);border-color:var(--line);border-left-color:var(--accent);color:var(--dim)">
+  Composes the estate: <a href="https://github.com/sjgant80-hub/agora" style="color:var(--accent)">agora</a> (escrow + settle-on-re-verify + conservation), <a href="https://github.com/sjgant80-hub/the-wallet" style="color:var(--accent)">the-wallet</a> (each node's identity + budget ceiling), <a href="https://github.com/sjgant80-hub/mesh-self" style="color:var(--accent)">mesh-self</a> (a node is a sovereign sub that can't drain the mesh). <strong>Honest scope:</strong> this is the compute-rail mechanic — a demo on an in-browser ledger, not a live deployed economy; running real rigs is the operator's hands. A governance layer for rule-updates is the named next fold.
+</div>
+
+<footer>
+  <p>MIT · <a href="https://github.com/sjgant80-hub/kcc-mesh">source &amp; mutation gate</a> — the decision is the gated <code>kernel.mjs</code> verbatim (injected, CI-diffed). Pure client-side.</p>
+</footer>
+</div>
+
+<script type="module">
+// ⟦KERNEL-BEGIN⟧ generated from kernel.mjs by make-page.mjs — do not edit here
+// kcc-mesh — the COMPUTE-ECONOMY rail. Idle rigs become sovereign mesh-nodes that earn internal
+// contribution-units (KCC) by VERIFIED work: a bounty is escrowed, a node claims and does the compute,
+// and it is paid ONLY IF the result re-verifies (proof-of-contribution, not proof-of-asking). Units are
+// CONSERVED — there is no minting after genesis, so a node earns only what another committed. Each node
+// has a budget ceiling it cannot cross, so no single node can drain the mesh.
+//
+// ⚑ TWO RAILS, and this file is ONLY the compute rail. The MONEY rail — KCC as a tradeable currency, a
+// fiat on-ramp, an exchange listing — is NOT here and is gated behind legal counsel (securities and
+// money-transmission law apply). These are INTERNAL contribution-units, NOT money, NOT a cryptocurrency,
+// NOT tradeable. The wall is STRUCTURAL, not a promise: this kernel exposes NO money-out verb — no fiat,
+// trade, exchange, withdraw, sell, convert, or cashout — so there is no code path from a unit to money.
+// (The test `no money verb in the exported surface` checks this against the code, like airgap's
+// no-network invariant.)
+//
+// Composes the estate: agora (escrow + settle-on-re-verify + hash-chain + conservation), the-wallet
+// (each node's identity + budget ceiling), mesh-self (a node is a sovereign sub that cannot drain the
+// mesh), fork=wallet (onboarding: the id IS the wallet). Pure and total; guards one-per-line.
+
+const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+const isInt = (v) => Number.isInteger(v);
+const isStr = (v) => typeof v === 'string' && v.length > 0;
+
+// a deterministic content hash for the audit chain (FNV-1a; an audit trail, not a security signature —
+// real deployment signs each entry with the-wallet's Ed25519).
+function fnv(str) {
+  let h = 0x811c9dc5 >>> 0;
+  for (let i = 0; i < str.length; i += 1) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+const link = (prev, entry) => fnv(prev + '|' + JSON.stringify(entry));
+
+function clone(l) {
+  return {
+    total: l.total,
+    balances: { ...l.balances },
+    spent: { ...l.spent },
+    ceilings: { ...l.ceilings },
+    escrow: Object.fromEntries(Object.entries(l.escrow).map(([k, v]) => [k, { ...v }])),
+    settled: [...l.settled],
+    chain: l.chain.map((e) => ({ entry: e.entry, hash: e.hash })),
+  };
+}
+
+// append a chain entry whose hash links to the one before it (tamper-evident audit trail)
+function append(l, entry) {
+  const prev = l.chain.length ? l.chain[l.chain.length - 1].hash : '';
+  l.chain.push({ entry, hash: link(prev, entry) });
+}
+
+/** genesis({ total, holder }) — the ONE and only unit creation: `total` units, all held by `holder`. After
+ * this the total never changes (conservation). Everyone else onboards with zero and earns by work. */
+function genesis(m) {
+  if (!isObj(m)) return { ok: false, why: 'reads { total, holder }' };
+  if (!isInt(m.total) || m.total < 1) return { ok: false, why: 'total must be a positive integer' };
+  if (!isStr(m.holder)) return { ok: false, why: 'holder must be a non-empty id' };
+  const l = { total: m.total, balances: { [m.holder]: m.total }, spent: { [m.holder]: 0 }, ceilings: { [m.holder]: m.total }, escrow: {}, settled: [], chain: [] };
+  append(l, { type: 'genesis', total: m.total, holder: m.holder });
+  return { ok: true, ledger: l };
+}
+
+/** onboard(ledger, { id, budgetCeiling }) — fork = wallet: a rig registers as a sovereign node with zero
+ * balance and a budget ceiling it cannot cross (its lifetime commitment cap). No minting — it earns by work. */
+function onboard(ledger, m) {
+  if (!isObj(ledger)) return { ok: false, why: 'ledger must be an object' };
+  if (!isObj(m)) return { ok: false, why: 'reads { id, budgetCeiling }' };
+  if (!isStr(m.id)) return { ok: false, why: 'id must be a non-empty string (the fork IS the wallet)' };
+  if (m.id in ledger.balances) return { ok: false, why: 'a node with id ' + m.id + ' already exists' };
+  if (!isInt(m.budgetCeiling) || m.budgetCeiling < 1) return { ok: false, why: 'budgetCeiling must be a positive integer' };
+  const l = clone(ledger);
+  l.balances[m.id] = 0;
+  l.spent[m.id] = 0;
+  l.ceilings[m.id] = m.budgetCeiling;
+  append(l, { type: 'onboard', id: m.id, budgetCeiling: m.budgetCeiling });
+  return { ok: true, ledger: l };
+}
+
+/** postBounty(ledger, { bountyId, poster, amount }) — escrow `amount` from the poster for a job. Refuses
+ * an overdraft (no minting: a poster cannot escrow more than it holds) and refuses committing past the
+ * poster's budget ceiling (no single node drains the mesh). Refuses a duplicate bounty. */
+function postBounty(ledger, m) {
+  if (!isObj(ledger)) return { ok: false, why: 'ledger must be an object' };
+  if (!isObj(m)) return { ok: false, why: 'reads { bountyId, poster, amount }' };
+  if (!isStr(m.bountyId)) return { ok: false, why: 'bountyId must be a non-empty string' };
+  if (m.bountyId in ledger.escrow) return { ok: false, why: 'a bounty with id ' + m.bountyId + ' is already open' };
+  if (ledger.settled.includes(m.bountyId)) return { ok: false, why: 'bounty id ' + m.bountyId + ' was already used' };
+  if (!isStr(m.poster) || !(m.poster in ledger.balances)) return { ok: false, why: 'poster must be an onboarded node' };
+  if (!isInt(m.amount) || m.amount < 1) return { ok: false, why: 'amount must be a positive integer' };
+  if (m.amount > ledger.balances[m.poster]) return { ok: false, why: 'no minting — a poster cannot escrow more than it holds' };
+  if (ledger.spent[m.poster] + m.amount > ledger.ceilings[m.poster]) return { ok: false, why: 'the poster would cross its budget ceiling — no node drains the mesh' };
+  const l = clone(ledger);
+  l.balances[m.poster] -= m.amount;
+  l.spent[m.poster] += m.amount;
+  l.escrow[m.bountyId] = { amount: m.amount, poster: m.poster };
+  append(l, { type: 'postBounty', bountyId: m.bountyId, poster: m.poster, amount: m.amount });
+  return { ok: true, ledger: l };
+}
+
+/** settle(ledger, { bountyId, nodeId, reVerified }) — pay the node the escrowed bounty ONLY IF the work
+ * re-verified (proof-of-contribution). If it did not, the bounty returns to the poster — the node earns
+ * NOTHING for un-re-verified work. Refuses a double-settle and an unknown bounty. Units are conserved. */
+function settle(ledger, m) {
+  if (!isObj(ledger)) return { ok: false, why: 'ledger must be an object' };
+  if (!isObj(m)) return { ok: false, why: 'reads { bountyId, nodeId, reVerified }' };
+  if (!isStr(m.bountyId)) return { ok: false, why: 'bountyId must be a non-empty string' };
+  if (!(m.bountyId in ledger.escrow)) return { ok: false, why: 'no open bounty with id ' + m.bountyId };
+  if (typeof m.reVerified !== 'boolean') return { ok: false, why: 'reVerified must be a boolean — the mesh must have re-verified the result' };
+  if (!isStr(m.nodeId) || !(m.nodeId in ledger.balances)) return { ok: false, why: 'nodeId must be an onboarded node' };
+  const { amount, poster } = ledger.escrow[m.bountyId];
+  const l = clone(ledger);
+  const paidTo = m.reVerified ? m.nodeId : poster;   // proven work pays the node; unproven returns to the poster
+  l.balances[paidTo] += amount;
+  delete l.escrow[m.bountyId];
+  l.settled.push(m.bountyId);
+  append(l, { type: 'settle', bountyId: m.bountyId, nodeId: m.nodeId, reVerified: m.reVerified, paidTo });
+  return { ok: true, ledger: l, paid: m.reVerified ? amount : 0, paidTo };
+}
+
+/** conserved(ledger) — the load-bearing invariant: balances + open escrow always sum to the genesis total.
+ * No unit was ever minted or destroyed. */
+function conserved(ledger) {
+  if (!isObj(ledger) || !isObj(ledger.balances)) return { ok: false, why: 'ledger must be an object with balances' };
+  let sum = 0;
+  for (const id of Object.keys(ledger.balances)) sum += ledger.balances[id];
+  for (const b of Object.keys(ledger.escrow)) sum += ledger.escrow[b].amount;
+  return { ok: true, conserved: sum === ledger.total, sum, total: ledger.total };
+}
+
+/** verifyChain(ledger) — the audit trail: re-derive every hash from the one before it; any tampered or
+ * reordered entry breaks the chain. */
+function verifyChain(ledger) {
+  if (!isObj(ledger) || !Array.isArray(ledger.chain) || ledger.chain.length === 0) return { ok: false, why: 'ledger must carry a non-empty chain' };
+  let prev = '';
+  for (let i = 0; i < ledger.chain.length; i += 1) {
+    const e = ledger.chain[i];
+    if (e.hash !== link(prev, e.entry)) return { ok: true, intact: false, brokeAt: i };
+    prev = e.hash;
+  }
+  return { ok: true, intact: true };
+}
+// ⟦KERNEL-END⟧
+
+const g = (id) => document.getElementById(id);
+let ledger = null;
+let rigN = 0, jobN = 0;
+
+function apply(r) {
+  if (!r.ok) { g('err').textContent = '✗ ' + r.why; return false; }
+  ledger = r.ledger; g('err').textContent = ''; render(); return true;
+}
+function reset() { ledger = genesis({ total: 1000, holder: 'pool' }).ledger; rigN = 0; jobN = 0; g('err').textContent = ''; render(); }
+function addRig() { rigN += 1; apply(onboard(ledger, { id: 'rig-' + rigN, budgetCeiling: 300 })); }
+function openBounty() {
+  jobN += 1;
+  const rig = Object.keys(ledger.balances).find((k) => k.startsWith('rig-'));
+  if (!rig) { g('err').textContent = 'onboard a rig first'; return null; }
+  const id = 'job-' + jobN;
+  if (!apply(postBounty(ledger, { bountyId: id, poster: 'pool', amount: 120 }))) return null;
+  return { id, rig };
+}
+function doSettle(verified) {
+  const open = Object.keys(ledger.escrow);
+  if (!open.length) { const b = openBounty(); if (!b) return; return finishSettle(b.id, b.rig, verified); }
+  const id = open[0];
+  const rig = Object.keys(ledger.balances).find((k) => k.startsWith('rig-')) || 'pool';
+  finishSettle(id, rig, verified);
+}
+function finishSettle(id, rig, verified) { apply(settle(ledger, { bountyId: id, nodeId: rig, reVerified: verified })); }
+function tamper() {
+  // rewrite a balance in place WITHOUT touching the chain — the audit trail must catch it
+  const forged = JSON.parse(JSON.stringify(ledger));
+  forged.balances.pool = (forged.balances.pool || 0) + 500;   // fabricate units
+  ledger = forged; render();
+  g('err').textContent = 'fabricated 500 units into the pool — CONSERVED goes red (1500 ≠ 1000). the chain is a separate guard, for tampering an existing entry.';
+}
+
+function render() {
+  const cons = conserved(ledger);
+  const chain = verifyChain(ledger);
+  g('s-conserved').innerHTML = cons.conserved ? '<span class="ok">✓ yes (' + cons.sum + '/' + cons.total + ')</span>' : '<span class="no">✗ NO (' + cons.sum + '/' + cons.total + ')</span>';
+  g('s-chain').innerHTML = chain.intact ? '<span class="ok">✓ intact</span>' : '<span class="no">✗ broken at #' + chain.brokeAt + '</span>';
+  g('s-total').textContent = ledger.total;
+  const nodes = Object.keys(ledger.balances).length;
+  g('s-counts').textContent = nodes + ' / ' + ledger.settled.length;
+
+  g('balances').innerHTML = Object.keys(ledger.balances).map((id) =>
+    '<tr><td>' + id + '</td><td class="n">' + ledger.balances[id] + '</td><td class="n">' + ledger.spent[id] + ' / ' + ledger.ceilings[id] + '</td></tr>').join('');
+  const open = Object.entries(ledger.escrow);
+  g('bounties').innerHTML = open.length ? open.map(([k, v]) => '<div>' + k + ' · ' + v.amount + ' escrowed by ' + v.poster + '</div>').join('') : '<div>none open</div>';
+  g('chain').innerHTML = ledger.chain.map((e) => '<div><span class="hash">' + e.hash + '</span> ' + e.entry.type + (e.entry.type === 'settle' ? ' → ' + e.entry.paidTo + (e.entry.reVerified ? ' (paid)' : ' (returned)') : '') + '</div>').join('');
+}
+
+g('op-reset').addEventListener('click', reset);
+g('op-onboard').addEventListener('click', addRig);
+g('op-post').addEventListener('click', () => openBounty());
+g('op-verified').addEventListener('click', () => doSettle(true));
+g('op-unverified').addEventListener('click', () => doSettle(false));
+g('op-tamper').addEventListener('click', tamper);
+
+reset();
+</script>
+</body>
+</html>
