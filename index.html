@@ -124,6 +124,35 @@
   <div class="ops"><button id="c-tamper-go" class="warn">raise one measured value by a unit</button><button id="c-merge-go">reconcile two copies of the ledger</button></div>
   <div id="c-tamper" aria-live="polite"></div><div id="c-merge" aria-live="polite"></div>
 </div>
+<h2 id="for-organisations">For an organisation</h2>
+<p class="sub"><b>Who made what, who holds it, and what it measurably added — on a record nobody can quietly rewrite, and a fair split of any pool you choose, that anyone can re-derive.</b> Teams ship tools, models and analyses that others build on. Credit for that is usually decided in a meeting from memory. The contribution ledger records it at the moment of release, signed by whoever made it, and lets a measured contribution count only when its proof re-runs.</p>
+<div class="rails">
+  <div class="rail build"><h4>What it does</h4><p>Records each release (with its proofs), each hand-over, and each measured contribution, signed and chained. Computes, from that record alone, each contributor’s part of a pool you name, with every line behind it.</p></div>
+  <div class="rail gate"><h4>What it does not do</h4><p>It moves nothing. It is not a payment system, a currency or a token, and it promises no one anything. The pool, the switch and what a part is worth are your organisation’s decisions, under your own policies and advice.</p></div>
+</div>
+<h3>For each role</h3>
+<ul class="note" style="color:var(--ink)">
+  <li><b>Chief executive:</b> credit follows measured work, not visibility. The record shows who built what the business runs on, from the day it was released.</li>
+  <li><b>Finance:</b> any allocation you choose to make — a recognition pool, internal credits — re-derives from the ledger to the unit, with every line behind every part. Auditors re-run it; nothing rests on a spreadsheet someone edited.</li>
+  <li><b>Operations:</b> hand-overs are signed by the holder of the moment, so ownership of every tool and model is current; a second hand-over of the same thing is refused.</li>
+  <li><b>Technology and security:</b> Ed25519 signatures over one canonical byte form, SHA-256 chaining, append-only, replay from nothing; a gate re-runs each contribution’s proof before it counts. The kernel is mutation-gated on every change, and it exposes no verb that moves anything out.</li>
+  <li><b>The people who contribute:</b> each can open the ledger and check their own part, and everyone else’s, from the same record — no black box.</li>
+</ul>
+<h3>Roll-out</h3>
+<ol class="note" style="color:var(--ink)">
+  <li><b>Day one:</b> open this page and replay the DIGI drop’s ledger here; read the code (<code>contrib.mjs</code>, one file).</li>
+  <li><b>Week one:</b> write your own genesis — your measurers, your activators, your policy (maker’s part, parents’ part, an early weight) — and record each release your teams make, with the proof your own gate re-runs.</li>
+  <li><b>Ongoing:</b> keep the ledger where you keep records; anyone given a copy replays it. Compute sandbox allocations whenever you want to see where credit falls. Turn the switch on only when your organisation has decided what a pool is, with the advice it needs.</li>
+</ol>
+<h3>Risks, answered straight</h3>
+<ul class="note" style="color:var(--ink)">
+  <li><b>Can a measurer inflate a value?</b> A value counts only if your gate re-runs its proof; a measurer is a key your genesis names, so a bad one is visible and removable in your next genesis.</li>
+  <li><b>Can a record be changed later?</b> Not without breaking its signature and the chain from that entry on; the tamper test above shows it.</li>
+  <li><b>Is the policy fair?</b> It is whatever you seal at genesis, before any record it weighs, and it is on the record for everyone to read. The DIGI ledger here carries a demo policy.</li>
+  <li><b>What about money?</b> This code moves none and promises none. If your organisation ever attaches value to a part, that is a decision with legal and tax dimensions: take advice first.</li>
+</ul>
+<p class="note">Licence: MIT — no licence fee. Supplier: <a href="https://www.ai-nativesolutions.com" style="color:var(--accent)">AI Native Solutions</a>; support is agreed per deployment. Powered by the Konomi architecture, created by Thomas Frumkin.</p>
+
 <p class="note">The kernel: <code>contrib.mjs</code> (mutation-gated, as <code>kernel.mjs</code>), with the DIGI gate in <code>digi-gate.mjs</code>; the ledger file <code>ledger/digi.json</code> regenerates byte for byte from the DIGI records (<code>node tools/seed-digi.mjs --check</code>, in CI).</p>
 
 <footer>
