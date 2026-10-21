@@ -33,7 +33,8 @@ async function load() {
     say('✓ Replayed here in ' + Math.round(performance.now() - t0).toLocaleString() + ' ms: ' + led.log.length.toLocaleString() + ' entries, every signature and every gate holds. Head ' + r.ledger.head.slice(0, 16) + '…');
     fill($('#c-stats'), [['releases', count('release')], ['gives', count('give')], ['measured values', count('value')], ['the switch', r.ledger.switch === null ? 'off' : 'on']].map(([k, v]) => el('div', { class: 'stat' }, el('span', {}, k), el('b', {}, String(v)))));
     const p = r.ledger.genesis.policy;
-    fill($('#c-policy'), 'Sealed in its genesis, before any record it weighs (a demo policy — the real one is the ledger owner’s): the maker keeps ' + p.makerPpm / 1e4 + '% of every value its assets earn, the parents of a child share ' + p.lineagePpm / 1e4 + '%, the owner of the moment the rest; entries up to position ' + p.earlyUntil.toLocaleString() + ' weigh ' + p.earlyNum + '/' + p.earlyDen + '.');
+    fill($('#c-policy'), el('p', {}, el('b', {}, 'How credit is split'), ' — fixed in the ledger’s first entry, before any record it weighs. This is a demonstration policy; a real ledger’s owner sets its own:'),
+      el('ul', {}, el('li', {}, 'the maker of a card or app keeps ' + p.makerPpm / 1e4 + '% of every measured value it earns;'), el('li', {}, 'the parents of a bred card share ' + p.lineagePpm / 1e4 + '%;'), el('li', {}, 'whoever holds it when the value is measured gets the rest;'), el('li', {}, 'the first ' + p.earlyUntil.toLocaleString() + ' entries count ' + p.earlyNum + '/' + p.earlyDen + ' times, for being early.')));
     allocateNow();
   } catch (e) { say('✗ ' + (e.message || e), true); }
 }
@@ -43,7 +44,7 @@ function allocateNow() {
   const pool = Math.round(Number($('#c-pool').value) || 0), a = allocate(S.ledger, { sandbox: true, pool }), c = credits(S.ledger);
   if (!a.ok) return fill($('#c-alloc'), el('p', { class: 'bad' }, a.why));
   const rows = Object.entries(a.parts).sort((x, y) => y[1] - x[1] || (x[0] < y[0] ? -1 : 1));
-  fill($('#c-alloc'), el('p', { class: 'note' }, 'Sandbox: computed here, by anyone, from the ledger alone. A live allocation needs the switch, and this ledger holds none: ', el('b', {}, allocate(S.ledger).why)),
+  fill($('#c-alloc'), el('p', { class: 'note' }, 'A sandbox: a demonstration of how a pool would split, computed here by anyone from the ledger alone. Nothing is allocated — a live allocation needs the switch: ', el('b', {}, allocate(S.ledger).why)),
     el('table', {}, el('thead', {}, el('tr', {}, el('th', {}, 'contributor'), el('th', { class: 'n' }, 'credit'), el('th', { class: 'n' }, 'part of ' + a.pool.toLocaleString()))),
       el('tbody', {}, rows.map(([k, part]) => el('tr', {}, el('td', {}, el('button', { class: 'linkish', onclick: () => lines(k) }, who(k))), el('td', { class: 'n' }, BigInt(c.credits[k]).toLocaleString()), el('td', { class: 'n' }, part.toLocaleString()))))),
     el('p', { class: 'dim' }, 'The parts sum to the pool exactly: ' + a.total.toLocaleString() + '. Press a contributor for every line behind their part.'));

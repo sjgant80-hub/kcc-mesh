@@ -58,6 +58,7 @@
 <div class="wrap">
 <header>
   <h1>KCC Mesh <span class="hl">·</span> the compute-economy rail</h1>
+  <p class="sub"><b>In plain words:</b> a ledger, kept and checked in your browser, of who did which piece of work and who made which release. It counts in <b>KCC</b>, the estate’s internal contribution unit — a unit of credit for work that re-checks, not money. “The compute-economy rail” is this ledger and its rules: work is credited only when someone re-runs it and gets the same answer.</p>
   <p class="sub">Idle rigs stop mining wasted hashes and become <strong>sovereign mesh-nodes</strong> that earn internal contribution-units by <strong>verified work</strong>: a bounty is escrowed, a node claims it and does the compute, and it is paid <strong>only if the result re-verifies</strong> (proof-of-contribution, not proof-of-asking). Units are <strong>conserved</strong> — no minting after genesis — on a tamper-evident chain, and each node has a budget ceiling it cannot cross, so no node can drain the mesh.</p>
 </header>
 
@@ -65,8 +66,8 @@
   <b>⚠ Internal contribution-units — NOT money.</b> These are not a currency, not a cryptocurrency, not tradeable. There is no code path from a unit to money: this kernel exposes <b>no</b> fiat / trade / exchange / withdraw / sell / convert verb (a test checks that against the code). The money rail is a separate, <b>gated</b> matter behind legal counsel.
 </div>
 <div class="rails">
-  <div class="rail build"><h4>✓ compute rail · this</h4><p>rigs run mesh-nodes, earn internal units by re-verified work, settled on a conserved chain. sovereign, no center, no fiat. built here.</p></div>
-  <div class="rail gate"><h4>✗ money rail · gated</h4><p>KCC as a tradeable currency / fiat on-ramp / exchange listing — securities &amp; money-transmission law apply. <b>NOT built.</b> counsel first, human hands.</p></div>
+  <div class="rail build"><h4>✓ compute rail · this page</h4><p>Built here. A machine joins as a node, claims a posted job, does it, and is credited internal units <b>only if the result re-runs</b> to the same answer. Every step is an entry on a chain anyone can replay. No central server and no money: units never leave the ledger.</p></div>
+  <div class="rail gate"><h4>✗ money rail · not built</h4><p>Turning units into anything tradeable — a currency, a way in or out of money, an exchange listing — would bring in securities, money-transmission, financial-promotion, tax and employment law. <b>None of it is built</b>, and none of it will be without legal advice first and a person’s decision.</p></div>
 </div>
 
 <h2>Run the mesh economy</h2>
@@ -76,8 +77,9 @@
   <button id="op-post">post a bounty (pool → escrow)</button>
   <button id="op-verified">settle ✓ re-verified → the rig earns</button>
   <button id="op-unverified">settle ✗ not verified → returns to pool</button>
-  <button id="op-tamper" class="warn">tamper the ledger</button>
+  <button id="op-tamper" class="warn">try to fake 500 units (watch it be caught)</button>
 </div>
+<p class="note">Every button runs the real ledger code on this page. The last one slips 500 units into the pool that no entry created, the way a cheat would, and the conservation check goes red. Rewriting an entry already on the chain is a different cheat, and the chain check catches that one (try it below, under “try to break it”). Press ↺ genesis to start clean.</p>
 <div class="err" id="err"></div>
 
 <div class="grid">
@@ -88,7 +90,7 @@
   </div>
   <div class="card">
     <h3>the invariants</h3>
-    <div class="stat"><span>conserved (no minting)</span><b id="s-conserved">—</b></div>
+    <div class="stat"><span>conserved — no unit is created after genesis: balances and open jobs always add up to the starting total</span><b id="s-conserved">—</b></div>
     <div class="stat"><span>chain intact (audit trail)</span><b id="s-chain">—</b></div>
     <div class="stat"><span>total supply</span><b id="s-total">—</b></div>
     <div class="stat"><span>nodes / settled jobs</span><b id="s-counts">—</b></div>
@@ -111,7 +113,8 @@
   <p class="note">The 1,000 genesis DIGI cards as releases, and each card organ 6 fielded in a business’s mesh as a give and a measured value — every entry gated against the DIGI repository’s own records (<a href="https://sjgant80-hub.github.io/digi-card/" style="color:var(--accent)">the live drop</a>), with the drop’s public demo keys, so every signature is reproducible.</p>
   <div id="c-status" aria-live="polite">Loading…</div>
   <div id="c-stats"></div>
-  <p class="note" id="c-policy"></p>
+  <p class="note">A <b>measured contribution</b> is a number someone can re-derive: here, how much a card added to a business’s mesh — the mesh’s score with the card, less its score without it — written and signed by the one who measured it.</p>
+  <div class="note" id="c-policy"></div>
 </div>
 <div class="card" style="margin-top:.8rem">
   <h3>a sandbox allocation</h3>
