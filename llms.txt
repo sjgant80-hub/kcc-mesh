@@ -4,6 +4,12 @@
 
 kcc-mesh is a sovereign, MIT-licensed build by Simon Gant (UK) — it runs in the browser, is free to own and fork, and is part of the AI Native Solutions estate. Source and a live page are linked below.
 
+## The contribution ledger
+
+- Every release (a DIGI card, an app, a node) recorded as a signed contribution: an append-only, hash-chained ledger of releases, gives and measured values, each gated by a re-run of its proofs (contrib.mjs, mutation-gated).
+- It records the DIGI drop: 1,000 genesis cards and their measured mesh shares, every entry checked against the DIGI repository's own records, replayable in the browser.
+- A sandbox allocation over the ledger can be computed by anyone, with every line behind each part. The allocation switch is off, and the kernel has no verb that turns it on and none that moves anything out. Internal contribution units, not money.
+
 ## Key pages
 
 - [Live page](https://sjgant80-hub.github.io/kcc-mesh/)
