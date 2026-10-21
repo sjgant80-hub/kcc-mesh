@@ -48,6 +48,10 @@
   code{font:.88em var(--mono);background:var(--chip);padding:.08em .35em;border-radius:4px}
   footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
   footer a{color:var(--accent)}
+  .good{color:var(--good)} .bad{color:var(--bad)} .dim{color:var(--dim);font-size:.88rem} .note{color:var(--dim);font-size:.9rem;margin:.5rem 0}
+  button.linkish{background:none;border:0;color:var(--accent2);cursor:pointer;font:inherit;padding:0;text-align:left;text-decoration:underline}
+  #c-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;margin:.6rem 0}
+  .tw{overflow-x:auto}
 </style>
 </head>
 <body>
@@ -97,6 +101,30 @@
 <div class="wallbox" style="background:var(--panel);border-color:var(--line);border-left-color:var(--accent);color:var(--dim)">
   Composes the estate: <a href="https://github.com/sjgant80-hub/agora" style="color:var(--accent)">agora</a> (escrow + settle-on-re-verify + conservation), <a href="https://github.com/sjgant80-hub/the-wallet" style="color:var(--accent)">the-wallet</a> (each node's identity + budget ceiling), <a href="https://github.com/sjgant80-hub/mesh-self" style="color:var(--accent)">mesh-self</a> (a node is a sovereign sub that can't drain the mesh). <strong>Honest scope:</strong> this is the compute-rail mechanic — a demo on an in-browser ledger, not a live deployed economy; running real rigs is the operator's hands. A governance layer for rule-updates is the named next fold.
 </div>
+
+<h2 id="contributions">The contribution ledger</h2>
+<div class="wallbox">
+  <b>Every release, recorded as a signed contribution — internal contribution units, NOT money.</b> A release (a DIGI card, an app, a node) is written signed by its maker; ownership moves by a give its owner of the moment signs; a measured contribution (a card’s leave-one-out share of a mesh’s work) is written signed by a named measurer. Nothing counts unless its gate re-runs. The chain is append-only and replays from nothing. <b>The allocation switch is off</b>: this kernel computes sandbox allocations for anyone, has no verb that turns the switch on, and none that moves anything out of the ledger. Whether an allocation is ever worth anything is a decision for the ledger’s owner, with legal counsel — not this code.
+</div>
+<div class="card">
+  <h3>the DIGI drop, replayed here</h3>
+  <p class="note">The 1,000 genesis DIGI cards as releases, and each card organ 6 fielded in a business’s mesh as a give and a measured value — every entry gated against the DIGI repository’s own records (<a href="https://sjgant80-hub.github.io/digi-card/" style="color:var(--accent)">the live drop</a>), with the drop’s public demo keys, so every signature is reproducible.</p>
+  <div id="c-status" aria-live="polite">Loading…</div>
+  <div id="c-stats"></div>
+  <p class="note" id="c-policy"></p>
+</div>
+<div class="card" style="margin-top:.8rem">
+  <h3>a sandbox allocation</h3>
+  <div class="ops"><label>pool <input id="c-pool" type="number" min="1" value="1000000" style="width:9rem"></label><button id="c-alloc-go">compute it here</button></div>
+  <div class="tw" id="c-alloc"></div>
+  <div class="tw" id="c-lines"></div>
+</div>
+<div class="card" style="margin-top:.8rem">
+  <h3>try to break it</h3>
+  <div class="ops"><button id="c-tamper-go" class="warn">raise one measured value by a unit</button><button id="c-merge-go">reconcile two copies of the ledger</button></div>
+  <div id="c-tamper" aria-live="polite"></div><div id="c-merge" aria-live="polite"></div>
+</div>
+<p class="note">The kernel: <code>contrib.mjs</code> (mutation-gated, as <code>kernel.mjs</code>), with the DIGI gate in <code>digi-gate.mjs</code>; the ledger file <code>ledger/digi.json</code> regenerates byte for byte from the DIGI records (<code>node tools/seed-digi.mjs --check</code>, in CI).</p>
 
 <footer>
   <p>MIT · <a href="https://github.com/sjgant80-hub/kcc-mesh">source &amp; mutation gate</a> — the decision is the gated <code>kernel.mjs</code> verbatim (injected, CI-diffed). Pure client-side.</p>
@@ -305,5 +333,6 @@ g('op-tamper').addEventListener('click', tamper);
 
 reset();
 </script>
+<script type="module" src="contrib-ui.mjs"></script>
 </body>
 </html>

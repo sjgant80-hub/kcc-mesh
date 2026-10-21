@@ -8,12 +8,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: actions/checkout@v4
+        with: { repository: sjgant80-hub/digi-card, path: digi, fetch-depth: 0 }
       - name: tests
-        run: node --test kernel.test.mjs
+        run: node --test kernel.test.mjs contrib.test.mjs
       - name: mutation gate — kernel.mjs must be CLEAN
         run: |
           node tools/witness.mjs mutate kernel.mjs --timeout 30000 --cap 500 --test node --test kernel.test.mjs | tee gate.out || true
           node -e "const b=require('fs').readFileSync('gate.out','utf8');const j=JSON.parse(b.slice(b.indexOf('{'),b.lastIndexOf('}')+1));if(j.clean!==true){console.error('GATE NOT CLEAN');process.exit(1)}console.log('CLEAN '+j.killed+'/'+j.total)"
+      - name: mutation gate — contrib.mjs must be CLEAN
+        run: |
+          node tools/witness.mjs mutate contrib.mjs --timeout 60000 --cap 800 --test node --test contrib.test.mjs | tee gate2.out || true
+          node -e "const b=require('fs').readFileSync('gate2.out','utf8');const j=JSON.parse(b.slice(b.indexOf('{'),b.lastIndexOf('}')+1));if(j.clean!==true){console.error('GATE NOT CLEAN');process.exit(1)}console.log('CLEAN '+j.killed+'/'+j.total)"
+      - name: the DIGI drop's contributions regenerate byte for byte from the DIGI records
+        run: node tools/seed-digi.mjs --digi digi --check
       - name: page fixpoint — the live logic IS the gated kernel
         run: |
           node make-page.mjs
