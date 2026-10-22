@@ -9,7 +9,7 @@ jobs:
         with:
           node-version: 22
       - uses: actions/checkout@v4
-        with: { repository: sjgant80-hub/digi-card, path: digi, fetch-depth: 0 }
+        with: { repository: sjgant80-hub/kardlings, path: digi, fetch-depth: 0 }
       - name: tests
         run: node --test kernel.test.mjs contrib.test.mjs
       - name: mutation gate — kernel.mjs must be CLEAN

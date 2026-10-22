@@ -1,6 +1,6 @@
 // contrib-ui.mjs — the contribution ledger, on the page: ledger/digi.json replayed in this browser from nothing — every
 // signature checked, every entry's gate re-run against the live DIGI drop's own records (same site, so fetched from
-// ../digi-card/) — then the sandbox allocation anyone can compute, one contributor's line items, a tampered copy
+// ../kardlings/, the DIGI repository, renamed from digi-card on 2026-10-22) — then the sandbox allocation anyone can compute, one contributor's line items, a tampered copy
 // refused, and a reconcile of two copies. The switch is off: the page computes sandbox allocations only.
 import { replay, allocate, shareOf, credits, reconcile, keysFromPhrase } from './contrib.mjs';
 import { gateOf } from './digi-gate.mjs';
@@ -21,7 +21,7 @@ const who = (k) => S.names.get(k) || short(k);
 async function load() {
   try {
     say('Fetching the ledger and the DIGI drop’s records…');
-    const [led, manifest, organ6] = await Promise.all(['ledger/digi.json', '../digi-card/drop/manifest.json', '../digi-card/data/organ-6/record.json'].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u + ' did not load'); return r.json(); })));
+    const [led, manifest, organ6] = await Promise.all(['ledger/digi.json', '../kardlings/drop/manifest.json', '../kardlings/data/organ-6/record.json'].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u + ' did not load'); return r.json(); })));
     S.gate = await gateOf(manifest, organ6);
     await names(manifest);
     say('Replaying ' + led.log.length.toLocaleString() + ' entries from nothing: every signature checked, every gate re-run against the DIGI records…');
